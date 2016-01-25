@@ -1,0 +1,16 @@
+{
+    "contents" : "# Andrew Fairless, August 2011\n# modified April 2015 for posting onto Github\n# This script calculates interrater reliabilities for Table 2 of Fairless et al 2013\n# Fairless et al 2013, doi: 10.1016/j.bbr.2012.08.051, PMID: 22982070, PMCID: PMC3554266\n# The interrater reliabilities are calculated for each pair of raters.  There are 3 raters.\n# Each interrater reliability is calculated as a Pearson's r and as an ICC(A,1)\n\ninstall.packages(\"irr\", dependencies = TRUE) # install package if not already installed\nlibrary(irr)     \t                         # library includes intraclass correlation coefficient (ICC) functions\n\n# The fictional data in \"altereddata.txt\" were modified from the original \n# empirical data used in Fairless et al 2013.\n# I am using fictional data instead of the original data because I do not have \n# permission of my co-authors to release the data into the public domain.  \n# Each row is a separate mouse/scoring period; 20 mice socially interacted in 10 pairs.\n# Each column is a different social behavior or rater; 3 raters scored 16 social behaviors.\n# NOTE:  Because these data are fictional, several important characteristics of\n# these data may be different from those of the original data (e.g., interrater\n# correlations are probably lower, behaviors may not sum properly)\ndata = read.table(\"altereddata.txt\", header = TRUE)\t\n\n# Each of the 3 raters scored 16 social behaviors contained in 16 columns.\n# The indices below identify the leftmost column for each rater's block of 16 columns.\nrater1col1 = 1\t\nrater2col1 = 17\t\nrater3col1 = 33\t\n\nvarnum = 16\t     # the number of columns/social behaviors per rater\n\n# sets up each combination of rater pairs\nratercombo = combn(c(rater1col1, rater2col1, rater3col1), m = 2)      \n\n\nsink(file = \"output.txt\")\n\n# The loop iterates over each combination of rater pairs\nfor(iter2 in 1:dim(ratercombo)[2]) {\n     startcol1 = ratercombo[1, iter2]\t\n     startcol2 = ratercombo[2, iter2]     \n     \n     # The loop iterates from the leftmost column for each rater across each column/behavior\n     for(iter in 1:varnum) {\t\n          cat(\"\\n\")\t\n     \n          # print names of the two variables that are correlated\n          print(colnames(data[startcol1 - 1 + iter]))\t\n          print(colnames(data[startcol2 - 1 + iter]))\t\n     \n          print(cor(data[startcol1 - 1 + iter], data[startcol2 - 1 + iter])[[1]])\t# Pearson's r\n          print(icc(cbind(data[startcol1 - 1 + iter], data[startcol2 - 1 + iter]), \n                    model = 't', type = 'a', unit = 's')[[7]][1])                    # ICC(A,1)\n          # to see full ICC results, use the line of code below\n          # print(icc(cbind(data[startcol1 - 1 + iter], data[startcol2 - 1 + iter]), model = 't', type = 'a', unit = 's'))     \n     }\t\n}\n\nsink(file = NULL)\n",
+    "created" : 1452018661033.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1136855919",
+    "id" : "A5C699EB",
+    "lastKnownWriteTime" : 1452018511,
+    "path" : "~/Link to backup/2015 code share/Fairless et al 2013 ICC/to share/interrater.R",
+    "project_path" : "interrater.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
